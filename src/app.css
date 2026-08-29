@@ -1,0 +1,523 @@
+:root {
+  --paper: #ece8db;
+  --paper-card: #faf8f0;
+  --ink: #1f2320;
+  --ink-soft: #5b5f57;
+  --rule: #cfc9b4;
+  --stamp: #c1443c;
+  --stamp-soft: #e7cfc9;
+  --carbon: #3b6e71;
+  --carbon-soft: #d8e4e0;
+  --danger: #b23b2c;
+
+  --font-mono: ui-monospace, "SF Mono", "Menlo", "IBM Plex Mono", monospace;
+  --font-sans: -apple-system, "SF Pro Text", system-ui, "Hiragino Sans", sans-serif;
+
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  min-height: 100dvh;
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+#root {
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+button {
+  font-family: inherit;
+}
+
+button:focus-visible,
+input:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--carbon);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ---------- App shell ---------- */
+
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 20px 14px;
+}
+
+.app-header .wordmark {
+  font-family: var(--font-mono);
+  font-size: 15px;
+  letter-spacing: 0.02em;
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.app-header .wordmark .stamp-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 1.5px solid var(--stamp);
+  transform: translateY(-1px);
+}
+
+.icon-button {
+  background: none;
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.icon-button:active {
+  background: var(--paper-card);
+}
+
+main {
+  flex: 1;
+  padding: 0 16px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* ---------- Capture ---------- */
+
+.capture-card {
+  border: 1px dashed var(--rule);
+  border-radius: 16px;
+  background: var(--paper-card);
+  padding: 28px 20px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.capture-card p {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.primary-button {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  letter-spacing: 0.03em;
+  background: var(--ink);
+  color: var(--paper-card);
+  border: none;
+  border-radius: 10px;
+  padding: 13px 22px;
+  cursor: pointer;
+  width: 100%;
+}
+
+.primary-button:active {
+  opacity: 0.85;
+}
+
+.primary-button:disabled {
+  background: var(--rule);
+  color: var(--ink-soft);
+  cursor: not-allowed;
+}
+
+.secondary-button {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  background: transparent;
+  color: var(--carbon);
+  border: 1px solid var(--carbon);
+  border-radius: 10px;
+  padding: 10px 16px;
+  cursor: pointer;
+}
+
+.secondary-button:active {
+  background: var(--carbon-soft);
+}
+
+.text-button {
+  background: none;
+  border: none;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--ink-soft);
+  text-decoration: underline;
+  padding: 4px;
+  cursor: pointer;
+}
+
+.visually-hidden-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.status-banner {
+  font-size: 13px;
+  border-radius: 10px;
+  padding: 10px 14px;
+  line-height: 1.5;
+}
+
+.status-banner.error {
+  background: var(--stamp-soft);
+  color: var(--danger);
+}
+
+.status-banner.loading {
+  background: var(--carbon-soft);
+  color: var(--carbon);
+  font-family: var(--font-mono);
+}
+
+/* ---------- Receipt card (signature element) ---------- */
+
+.receipt-list {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.receipt-card {
+  position: relative;
+  background: var(--paper-card);
+  padding: 18px 18px 22px;
+  box-shadow: 0 1px 0 var(--rule);
+  clip-path: polygon(
+    0% 0%, 100% 0%, 100% 100%,
+    96% 96%, 92% 100%, 88% 96%, 84% 100%, 80% 96%, 76% 100%, 72% 96%,
+    68% 100%, 64% 96%, 60% 100%, 56% 96%, 52% 100%, 48% 96%, 44% 100%,
+    40% 96%, 36% 100%, 32% 96%, 28% 100%, 24% 96%, 20% 100%, 16% 96%,
+    12% 100%, 8% 96%, 4% 100%, 0% 96%
+  );
+}
+
+.receipt-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.receipt-head input {
+  font-family: var(--font-mono);
+  border: none;
+  background: transparent;
+  color: var(--ink);
+  padding: 0;
+  width: 100%;
+}
+
+.receipt-store-input {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.receipt-date-input {
+  font-size: 12px;
+  color: var(--ink-soft);
+  margin-top: 2px;
+}
+
+.receipt-delete {
+  background: none;
+  border: none;
+  color: var(--ink-soft);
+  font-size: 12px;
+  font-family: var(--font-mono);
+  cursor: pointer;
+  padding: 4px;
+  flex-shrink: 0;
+}
+
+.receipt-delete:active {
+  color: var(--danger);
+}
+
+.rule {
+  border: none;
+  border-top: 1px dashed var(--rule);
+  margin: 10px 0;
+}
+
+.item-row {
+  display: grid;
+  grid-template-columns: 1fr 34px 64px 20px;
+  gap: 6px;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  padding: 6px 0;
+}
+
+.item-row input {
+  font-family: inherit;
+  font-size: inherit;
+  color: var(--ink);
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid transparent;
+  padding: 2px 0;
+  width: 100%;
+  min-width: 0;
+}
+
+.item-row input:focus {
+  border-bottom: 1px solid var(--carbon);
+  outline: none;
+}
+
+.item-row .qty-input,
+.item-row .price-input {
+  text-align: right;
+}
+
+.item-row .row-remove {
+  background: none;
+  border: none;
+  color: var(--rule);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+}
+
+.item-row .row-remove:active {
+  color: var(--danger);
+}
+
+.item-header-row {
+  display: grid;
+  grid-template-columns: 1fr 34px 64px 20px;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--ink-soft);
+  letter-spacing: 0.04em;
+}
+
+.add-item-button {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--carbon);
+  background: none;
+  border: none;
+  padding: 8px 0 2px;
+  cursor: pointer;
+  text-align: left;
+}
+
+.totals {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+
+.totals .totals-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.totals .totals-row.total {
+  font-size: 15px;
+  font-weight: 700;
+  border-top: 1px solid var(--ink);
+  padding-top: 6px;
+  margin-top: 4px;
+}
+
+.totals input {
+  font-family: inherit;
+  font-size: inherit;
+  text-align: right;
+  border: none;
+  background: transparent;
+  color: var(--ink);
+  width: 90px;
+}
+
+.receipt-note {
+  margin-top: 10px;
+  font-size: 12px;
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
+
+.receipt-actions {
+  margin-top: 14px;
+  display: flex;
+  gap: 8px;
+}
+
+.receipt-actions button {
+  flex: 1;
+  font-size: 12px;
+  padding: 10px 8px;
+}
+
+.empty-state {
+  text-align: center;
+  color: var(--ink-soft);
+  font-size: 13px;
+  padding: 40px 10px;
+  line-height: 1.7;
+}
+
+.export-all-bar {
+  position: sticky;
+  bottom: 0;
+  background: linear-gradient(to top, var(--paper) 60%, transparent);
+  padding: 14px 0 4px;
+}
+
+.export-all-label {
+  margin: 0 0 8px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-soft);
+  text-align: center;
+}
+
+.export-all-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.export-all-buttons button {
+  flex: 1;
+}
+
+.primary-button.ghost {
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--ink);
+}
+
+/* ---------- Settings ---------- */
+
+.settings-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--paper);
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.settings-body {
+  padding: 8px 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  overflow-y: auto;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field label {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+
+.field input,
+.field select {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  border: 1px solid var(--rule);
+  background: var(--paper-card);
+  border-radius: 8px;
+  padding: 11px 12px;
+  color: var(--ink);
+  width: 100%;
+}
+
+.field select {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, var(--ink-soft) 50%),
+    linear-gradient(135deg, var(--ink-soft) 50%, transparent 50%);
+  background-position: calc(100% - 18px) center, calc(100% - 13px) center;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+}
+
+.field-row-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.field-row-header label {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+
+.field .hint.error {
+  color: var(--danger);
+}
+
+.field .hint {
+  font-size: 11px;
+  color: var(--ink-soft);
+  line-height: 1.6;
+}
+
+.field .hint a {
+  color: var(--carbon);
+}
